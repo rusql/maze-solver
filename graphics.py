@@ -23,11 +23,4 @@ class Window:
 
 
     def close(self):
-        self.__is_running = False 
-
-def main():
-    win = Window(800,600)
-    win.wait_for_close()
-
-if __name__ == "__main__":
-    main()       
+        self.__is_running = False  
