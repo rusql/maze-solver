@@ -14,6 +14,12 @@ class Cell:
         self._win = window
 
     def draw(self, top_left_position: Point, bottom_right_position: Point):
+
+        self._x1 = top_left_position.x
+        self._y1 = top_left_position.y
+        self._x2 = bottom_right_position.x
+        self._y2 = bottom_right_position.y
+
         if self.has_top_wall:
             top_wall = Line(
                 Point(top_left_position.x, top_left_position.y),
@@ -41,3 +47,4 @@ class Cell:
                 Point(top_left_position.x, bottom_right_position.y),
             )
             self._win.draw_line(left_line)
+
