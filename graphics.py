@@ -2,7 +2,7 @@ from tkinter import Tk, BOTH, Canvas
 
 
 class Point:
-    def __init__(self, x:float, y:float):
+    def __init__(self, x: float, y: float):
         self.x: float = x
         self.y: float = y
 
@@ -14,7 +14,7 @@ class Line:
         self.__width = width
 
     def draw(self, canvas: Canvas, fill_color: str):
-        #canvas.create_line(1, 1, 2, 2, fill=fill_color, width=2)
+        # canvas.create_line(1, 1, 2, 2, fill=fill_color, width=2)
         canvas.create_line(
             self.__point1.x,
             self.__point1.y,
@@ -45,10 +45,50 @@ class Window:
             self.redraw()
         print("window closed...")
 
-
     def close(self):
         self.__is_running = False
 
-
-    def draw_line(self, line: Line, fill_color:str):
+    def draw_line(self, line: Line, fill_color: str = "white"):
         line.draw(self.__canvas, fill_color)
+
+
+class Cell:
+    def __init__(self, window: Window):
+        self.has_left_wall = True
+        self.has_right_wall = True
+        self.has_top_wall = True
+        self.has_bottom_wall = True
+        self._x1: float = None
+        self._x2: float = None
+        self._y1: float = None
+        self._y2: float = None
+        self._win = window
+
+    def draw(self, top_left_position: Point, bottom_right_position: Point):
+        if self.has_top_wall:
+            top_wall = Line(
+                Point(top_left_position.x, top_left_position.y),
+                Point(bottom_right_position.x, top_left_position.y),
+            )
+            self._win.draw_line(top_wall)
+
+        if self.has_bottom_wall:
+            bottom_wall = Line(
+                Point(top_left_position.x, bottom_right_position.y),
+                Point(bottom_right_position.x, bottom_right_position.y),
+            )
+            self._win.draw_line(bottom_wall)
+
+        if self.has_right_wall:
+            right_wall = Line(
+                Point(bottom_right_position.x, top_left_position.y),
+                Point(bottom_right_position.x, bottom_right_position.y),
+            )
+            self._win.draw_line(right_wall)
+
+        if self.has_left_wall:
+            left_line = Line(
+                Point(top_left_position.x, top_left_position.y),
+                Point(top_left_position.x, bottom_right_position.y),
+            )
+            self._win.draw_line(left_line)
