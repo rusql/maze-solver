@@ -3,19 +3,16 @@ from cell import Cell
 
 def main():
     win = Window(800,600)
-    cell = Cell(win)
-    cell.draw(Point(10,10), Point(30,30))
+    cell1 = Cell(win)
+    cell1.has_right_wall = False
+    cell1.draw(Point(10,10), Point(30,30))
 
-    cell.has_right_wall = False
-    cell.draw(Point(30,30), Point(40,40))
+    cell2 = Cell(win)
+    cell2.has_left_wall = False
+    cell2.draw(Point(30,10), Point(50,30))
 
-    cell.has_right_wall = True
-    cell.has_top_wall = False
-    cell.draw(Point(100,100), Point(200,200))
+    cell1.draw_move(cell2, False)
 
-    cell.has_top_wall = True
-    cell.has_left_wall = False
-    cell.draw(Point(200,200), Point(300,300))
 
     win.wait_for_close()
 
