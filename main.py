@@ -1,10 +1,11 @@
-from graphics import Window, Line, Point, Cell
+from graphics import Window, Point
+from cell import Cell
 
 def main():
     win = Window(800,600)
     cell = Cell(win)
     cell.draw(Point(10,10), Point(30,30))
-    
+
     cell.has_right_wall = False
     cell.draw(Point(30,30), Point(40,40))
 
