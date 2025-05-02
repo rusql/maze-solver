@@ -42,11 +42,11 @@ class Cell:
             self._win.draw_line(right_wall)
 
         if self.has_left_wall:
-            left_line = Line(
+            left_wall = Line(
                 Point(top_left_position.x, top_left_position.y),
                 Point(top_left_position.x, bottom_right_position.y),
             )
-            self._win.draw_line(left_line)
+            self._win.draw_line(left_wall)
 
     def draw_move(self, to_cell, undo=False):
         from_point = Point(

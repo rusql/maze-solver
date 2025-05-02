@@ -14,7 +14,6 @@ class Line:
         self.__width = width
 
     def draw(self, canvas: Canvas, fill_color: str):
-        # canvas.create_line(1, 1, 2, 2, fill=fill_color, width=2)
         canvas.create_line(
             self.__point1.x,
             self.__point1.y,
