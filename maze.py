@@ -12,7 +12,7 @@ class Maze:
             num_cols: int,
             cell_size_x: int,
             cell_size_y: int,
-            win: Window,
+            win: Window = None,
         ):
         
         self._x1: float = x1
@@ -27,12 +27,15 @@ class Maze:
         self._create_cells()
 
     def _create_cells(self):
-        col = []
         for col_num in range(self._num_cols): 
+            col = []
             self._cells.append(col)
             for row_num in range(self._num_rows):
                 col.append(Cell(self._win))
 
+        if self._win is None:
+            return
+        
         for col_num in range(self._num_cols): 
             for row_num in range(self._num_rows):
                 self._draw_cell(col_num, row_num)
@@ -59,4 +62,4 @@ class Maze:
 
 if __name__ == "__main__":
     win = Window(800,600)
-    m = Maze(0, 0, 3, 3, 10, 10, win)
+    m = Maze(4, 4, 2, 2, 10, 10, win)
