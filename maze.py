@@ -1,34 +1,93 @@
 import time
+import random
 from cell import Cell
 from graphics import Point, Window
 
 
 class Maze:
     def __init__(
-            self,
-            x1 : float,
-            y1 :float,
-            num_rows: int,
-            num_cols: int,
-            cell_size_x: int,
-            cell_size_y: int,
-            win: Window = None,
-        ):
-        
+        self,
+        x1: float,
+        y1: float,
+        num_rows: int,
+        num_cols: int,
+        cell_size_x: int,
+        cell_size_y: int,
+        win: Window = None,
+        seed=None,
+    ):
+        if seed is not None:
+            random.seed(seed)
         self._x1: float = x1
         self._y1: float = y1
         self._num_rows: int = num_rows
         self._num_cols: int = num_cols
         self._cell_size_x: int = cell_size_x
         self._cell_size_y: int = cell_size_y
-        self._win:Window = win
+        self._win: Window = win
         self._cells = []
-
         self._create_cells()
         self._break_entrance_and_exit()
+        self._break_walls_r(0, 0)
+
+    def _break_walls_r(self, i, j):
+        self._cells[i][j].visited = True
+        while True:
+            adjacent_cells = self._get_adjacent_cells(i, j)
+            possible_directions = list(
+                filter(lambda xy: not self._cells[xy[0]][xy[1]].visited, adjacent_cells)
+            )
+            if len(possible_directions) == 0:
+                self._draw_cell(i, j)
+                return
+            chosen_wall_index = 0
+            if len(possible_directions) > 0:
+                chosen_wall_index = random.randint(0, len(possible_directions) - 1)
+                new_cell_x, new_cell_y = possible_directions[chosen_wall_index]
+                self._break_wall(i, j, new_cell_x, new_cell_y)
+                self._break_walls_r(new_cell_x, new_cell_y)
+
+    def _break_wall(self, x1, y1, x2, y2):
+        # cell 2 left of cell 1
+        if x2 == x1 - 1 and y1 == y2:
+            self._cells[x1][y1].has_left_wall = False
+            self._cells[x2][x2].has_right_wall = False
+
+        # cell 2 right of cell 1
+        elif x2 == x1 + 1 and y1 == y2:
+            self._cells[x1][y1].has_right_wall = False
+            self._cells[x2][x2].has_left_wall = False
+
+        # cell 2 above cell 1
+        elif y2 == y1 - 1 and x1 == x2:
+            self._cells[x1][y1].has_top_wall = False
+            self._cells[x2][x2].has_bottom_wall = False
+
+        # cell 2 below cell 1
+        elif y2 == y1 + 1 and x1 == x2:
+            self._cells[x1][y1].has_bottom_wall = False
+            self._cells[x2][x2].has_top_wall = False
+
+
+    def _get_adjacent_cells(self, i: int, j: int) -> list[(int, int)]:
+        adjacent_cells: list[Cell] = []
+
+        # up
+        if j > 0 and self._num_rows > 1:
+            adjacent_cells.append((i, j - 1))
+        # down
+        if j < self._num_rows - 1 and self._num_rows > 1:
+            adjacent_cells.append((i, j + 1))
+        # left
+        if i > 0 and self._num_cols > 1:
+            adjacent_cells.append((i - 1, j))
+        # right
+        if i < self._num_cols - 1 and self._num_cols > 1:
+            adjacent_cells.append((i + 1, j))
+        return adjacent_cells
 
     def _create_cells(self):
-        for col_num in range(self._num_cols): 
+        for col_num in range(self._num_cols):
             col = []
             self._cells.append(col)
             for row_num in range(self._num_rows):
@@ -36,21 +95,21 @@ class Maze:
 
         if self._win is None:
             return
-        
-        for col_num in range(self._num_cols): 
+
+        for col_num in range(self._num_cols):
             for row_num in range(self._num_rows):
                 self._draw_cell(col_num, row_num)
-        
-    def _draw_cell(self, col:int, row:int):
+
+    def _draw_cell(self, col: int, row: int):
         if self._win is None:
             return
-        
+
         cell = self._cells[col][row]
 
         y1 = row * self._cell_size_y
-        y2 = (row * self._cell_size_y)+self._cell_size_y 
-        x1 = (col * self._cell_size_x)
-        x2 = (col * self._cell_size_x)+self._cell_size_x
+        y2 = (row * self._cell_size_y) + self._cell_size_y
+        x1 = col * self._cell_size_x
+        x2 = (col * self._cell_size_x) + self._cell_size_x
 
         x1 += self._x1
         x2 += self._x1
@@ -65,13 +124,16 @@ class Maze:
         time.sleep(time_delay)
 
     def _break_entrance_and_exit(self):
-        entrance_cell : Cell = self._cells[0][0]
-        exit_cell : Cell = self._cells[self._num_cols- 1 ][self._num_rows - 1]
+        entrance_cell: Cell = self._cells[0][0]
+        exit_cell: Cell = self._cells[self._num_cols - 1][self._num_rows - 1]
         entrance_cell.has_top_wall = False
         exit_cell.has_bottom_wall = False
         entrance_cell.redraw()
         exit_cell.redraw()
 
+
 if __name__ == "__main__":
-    win = Window(800,600)
-    m = Maze(4, 4, 2, 2, 10, 10, win)
+    win = Window(800, 600)
+    m = Maze(
+        x1=4, y1=4, num_rows=2, num_cols=2, cell_size_x=10, cell_size_y=10, win=win
+    )

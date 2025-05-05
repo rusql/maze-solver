@@ -3,10 +3,11 @@ from graphics import Line, Point, Window
 
 class Cell:
     def __init__(self, window: Window):
-        self.has_left_wall = True
-        self.has_right_wall = True
-        self.has_top_wall = True
+        self.has_left_wall: bool = True
+        self.has_right_wall:bool = True
+        self.has_top_wall:bool = True
         self.has_bottom_wall = True
+        self.visited:bool = False
         self._x1: float = None
         self._x2: float = None
         self._y1: float = None
@@ -29,6 +30,9 @@ class Cell:
         self._x2 = bottom_right_position.x
         self._y2 = bottom_right_position.y
 
+        if self._win is None:
+            return
+        
         top_wall = Line(
             Point(top_left_position.x, top_left_position.y),
             Point(bottom_right_position.x, top_left_position.y),
