@@ -25,6 +25,7 @@ class Maze:
         self._cells = []
 
         self._create_cells()
+        self._break_entrance_and_exit()
 
     def _create_cells(self):
         for col_num in range(self._num_cols): 
@@ -41,6 +42,9 @@ class Maze:
                 self._draw_cell(col_num, row_num)
         
     def _draw_cell(self, col:int, row:int):
+        if self._win is None:
+            return
+        
         cell = self._cells[col][row]
 
         y1 = row * self._cell_size_y
@@ -59,6 +63,14 @@ class Maze:
     def _animate(self, time_delay: float = 0.05):
         self._win.redraw()
         time.sleep(time_delay)
+
+    def _break_entrance_and_exit(self):
+        entrance_cell : Cell = self._cells[0][0]
+        exit_cell : Cell = self._cells[self._num_cols- 1 ][self._num_rows - 1]
+        entrance_cell.has_top_wall = False
+        exit_cell.has_bottom_wall = False
+        entrance_cell.redraw()
+        exit_cell.redraw()
 
 if __name__ == "__main__":
     win = Window(800,600)

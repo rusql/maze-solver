@@ -13,6 +13,15 @@ class Cell:
         self._y2: float = None
         self._win = window
 
+        self._undo_color = "red"
+        self._forward_color = "gray"
+
+    def redraw(self):
+        self.draw(
+            Point(self._x1, self._y1),
+            Point(self._x2, self._y2),
+        )
+
     def draw(self, top_left_position: Point, bottom_right_position: Point):
 
         self._x1 = top_left_position.x
@@ -20,33 +29,41 @@ class Cell:
         self._x2 = bottom_right_position.x
         self._y2 = bottom_right_position.y
 
+        top_wall = Line(
+            Point(top_left_position.x, top_left_position.y),
+            Point(bottom_right_position.x, top_left_position.y),
+        )
         if self.has_top_wall:
-            top_wall = Line(
-                Point(top_left_position.x, top_left_position.y),
-                Point(bottom_right_position.x, top_left_position.y),
-            )
-            self._win.draw_line(top_wall)
+            self._win.draw_line(top_wall, self._win.foreground_color)
+        else:
+            self._win.draw_line(top_wall, self._win.background_color)
 
+        bottom_wall = Line(
+            Point(top_left_position.x, bottom_right_position.y),
+            Point(bottom_right_position.x, bottom_right_position.y),
+        )
         if self.has_bottom_wall:
-            bottom_wall = Line(
-                Point(top_left_position.x, bottom_right_position.y),
-                Point(bottom_right_position.x, bottom_right_position.y),
-            )
-            self._win.draw_line(bottom_wall)
+            self._win.draw_line(bottom_wall, self._win.foreground_color)
+        else:
+            self._win.draw_line(bottom_wall, self._win.background_color)
 
+        right_wall = Line(
+            Point(bottom_right_position.x, top_left_position.y),
+            Point(bottom_right_position.x, bottom_right_position.y),
+        )
         if self.has_right_wall:
-            right_wall = Line(
-                Point(bottom_right_position.x, top_left_position.y),
-                Point(bottom_right_position.x, bottom_right_position.y),
-            )
-            self._win.draw_line(right_wall)
+            self._win.draw_line(right_wall, self._win.foreground_color)
+        else:
+            self._win.draw_line(right_wall, self._win.background_color)
 
+        left_wall = Line(
+            Point(top_left_position.x, top_left_position.y),
+            Point(top_left_position.x, bottom_right_position.y),
+        )
         if self.has_left_wall:
-            left_wall = Line(
-                Point(top_left_position.x, top_left_position.y),
-                Point(top_left_position.x, bottom_right_position.y),
-            )
-            self._win.draw_line(left_wall)
+            self._win.draw_line(left_wall, self._win.foreground_color)
+        else:
+            self._win.draw_line(left_wall, self._win.background_color)
 
     def draw_move(self, to_cell, undo=False):
         from_point = Point(
@@ -59,7 +76,7 @@ class Cell:
         )
 
         line = Line(from_point, to_point)
-        line_colour = "red"
+        line_colour = self._undo_color
         if undo:
-            line_colour = "gray"
+            line_colour = self._forward_color
         self._win.draw_line(line, line_colour)
