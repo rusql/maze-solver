@@ -14,8 +14,8 @@ class Cell:
         self._y2: float = None
         self._win = window
 
-        self._undo_color = "red"
-        self._forward_color = "gray"
+        self._undo_color = "gray"
+        self._forward_color = "red"
 
     def redraw(self):
         self.draw(
@@ -80,7 +80,7 @@ class Cell:
         )
 
         line = Line(from_point, to_point)
-        line_colour = self._undo_color
+        line_colour = self._forward_color
         if undo:
-            line_colour = self._forward_color
+            line_colour = self._undo_color
         self._win.draw_line(line, line_colour)

@@ -30,6 +30,45 @@ class Maze:
         self._break_entrance_and_exit()
         self._break_walls_r(0, 0)
         self._reset_cells_visited()
+        self._solve()
+
+    def _solve (self):
+        self._solve_r(0,0)
+
+    def _solve_r(self, i:int, j:int) -> bool:        
+        self._animate()
+        self._cells[i][j].visited = True
+        if i == self._num_cols and j == self._num_rows:
+            return True
+        unblocked_neighbours = self._unblocked_neighbours(i,j)
+        unvisited_accessable_neighbours = list(filter(lambda xy: not self._cells[xy[0]][xy[1]].visited, unblocked_neighbours))
+        for neighbour in unvisited_accessable_neighbours:
+            neighbour_cell = self._cells[neighbour[0]][neighbour[1]]
+            self._cells[i][i].draw_move(neighbour_cell)
+            if self._solve_r(neighbour[0], neighbour[1]):
+                return True
+            self._cells[i][i].draw_move(neighbour_cell, undo=True)
+        return False
+                
+
+
+
+    def _unblocked_neighbours(self, x, y):
+        unblocked_neighbours:list[(int, int)] = []
+        ## Above neighbour
+        if y > 0 and not self._cells[x][y].has_top_wall and not self._cells[x][y-1].has_bottom_wall:
+            unblocked_neighbours.append((x, y-1))
+        ## Below neighbour
+        if y < self._num_rows - 1 and not self._cells[x][y].has_bottom_wall and not self._cells[x][y+1].has_top_wall:
+            unblocked_neighbours.append((x, y+1))
+        ## Left neighbour
+        if x > 0 and not self._cells[x][y].has_left_wall and not self._cells[x-1][y].has_right_wall:
+            unblocked_neighbours.append((x-1, y))
+        ## Right neighbour
+        if x < self._num_rows - 1 and not self._cells[x][y].has_right_wall and not self._cells[x+1][y].has_left_wall:
+            unblocked_neighbours.append((x+1, y))
+
+        return unblocked_neighbours
 
     def _break_walls_r(self, i, j):
         self._cells[i][j].visited = True
@@ -120,7 +159,7 @@ class Maze:
         cell.draw(Point(x1, y1), Point(x2, y2))
         self._animate()
 
-    def _animate(self, time_delay: float = 0.01):
+    def _animate(self, time_delay: float = 0.05):
         self._win.redraw()
         time.sleep(time_delay)
 
