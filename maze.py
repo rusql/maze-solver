@@ -51,22 +51,22 @@ class Maze:
         # cell 2 left of cell 1
         if x2 == x1 - 1 and y1 == y2:
             self._cells[x1][y1].has_left_wall = False
-            self._cells[x2][x2].has_right_wall = False
+            self._cells[x2][y2].has_right_wall = False
 
         # cell 2 right of cell 1
         elif x2 == x1 + 1 and y1 == y2:
             self._cells[x1][y1].has_right_wall = False
-            self._cells[x2][x2].has_left_wall = False
+            self._cells[x2][y2].has_left_wall = False
 
         # cell 2 above cell 1
         elif y2 == y1 - 1 and x1 == x2:
             self._cells[x1][y1].has_top_wall = False
-            self._cells[x2][x2].has_bottom_wall = False
+            self._cells[x2][y2].has_bottom_wall = False
 
         # cell 2 below cell 1
         elif y2 == y1 + 1 and x1 == x2:
             self._cells[x1][y1].has_bottom_wall = False
-            self._cells[x2][x2].has_top_wall = False
+            self._cells[x2][y2].has_top_wall = False
 
 
     def _get_adjacent_cells(self, i: int, j: int) -> list[(int, int)]:
@@ -130,6 +130,11 @@ class Maze:
         exit_cell.has_bottom_wall = False
         entrance_cell.redraw()
         exit_cell.redraw()
+
+    def _reset_cells_visited(self):
+        for x in range (self._cells):
+            for y in range (self._cells[x]):
+                self._cells[x][y].visited = False
 
 
 if __name__ == "__main__":
