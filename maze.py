@@ -29,6 +29,7 @@ class Maze:
         self._create_cells()
         self._break_entrance_and_exit()
         self._break_walls_r(0, 0)
+        self._reset_cells_visited()
 
     def _break_walls_r(self, i, j):
         self._cells[i][j].visited = True
@@ -119,7 +120,7 @@ class Maze:
         cell.draw(Point(x1, y1), Point(x2, y2))
         self._animate()
 
-    def _animate(self, time_delay: float = 0.05):
+    def _animate(self, time_delay: float = 0.01):
         self._win.redraw()
         time.sleep(time_delay)
 
@@ -132,9 +133,9 @@ class Maze:
         exit_cell.redraw()
 
     def _reset_cells_visited(self):
-        for x in range (self._cells):
-            for y in range (self._cells[x]):
-                self._cells[x][y].visited = False
+        for col_num in range(self._num_cols):
+            for row_num in range(self._num_rows):
+                self._cells[col_num][row_num].visited = False
 
 
 if __name__ == "__main__":
