@@ -82,6 +82,7 @@ class Tests(unittest.TestCase):
 
     def test_cells_visited(self):
         maze = Maze(x1=0, y1=0, num_rows=2, num_cols=2, cell_size_x=10, cell_size_y=10)
+        maze._reset_cells_visited()
         for col_num in range(maze._num_cols):
             for row_num in range(maze._num_rows):
                 self.assertEqual(maze._cells[col_num][row_num].visited, False)

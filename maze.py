@@ -39,23 +39,23 @@ class Maze:
     def _solve_r(self, i:int, j:int) -> bool:        
         self._animate()
         self._cells[i][j].visited = True
-        if i == self._num_cols and j == self._num_rows:
+        if i == self._num_cols-1 and j == self._num_rows-1:
             return True
         unblocked_neighbours = self._unblocked_neighbours(i,j)
         unvisited_accessable_neighbours = list(filter(lambda xy: not self._cells[xy[0]][xy[1]].visited, unblocked_neighbours))
         for neighbour in unvisited_accessable_neighbours:
             neighbour_cell = self._cells[neighbour[0]][neighbour[1]]
-            self._cells[i][i].draw_move(neighbour_cell)
+            self._cells[i][j].draw_move(neighbour_cell)
             if self._solve_r(neighbour[0], neighbour[1]):
                 return True
-            self._cells[i][i].draw_move(neighbour_cell, undo=True)
+            self._cells[i][j].draw_move(neighbour_cell, undo=True)
         return False
                 
 
 
 
-    def _unblocked_neighbours(self, x, y):
-        unblocked_neighbours:list[(int, int)] = []
+    def _unblocked_neighbours(self, x:int, y:int):
+        unblocked_neighbours:List[Tuple[int, int]] = []
         ## Above neighbour
         if y > 0 and not self._cells[x][y].has_top_wall and not self._cells[x][y-1].has_bottom_wall:
             unblocked_neighbours.append((x, y-1))
@@ -127,9 +127,9 @@ class Maze:
             adjacent_cells.append((i + 1, j))
         return adjacent_cells
 
-    def _create_cells(self):
+    def _create_cells(self) -> None:
         for col_num in range(self._num_cols):
-            col = []
+            col:List[Cell] = []
             self._cells.append(col)
             for row_num in range(self._num_rows):
                 col.append(Cell(self._win))
@@ -163,9 +163,10 @@ class Maze:
     def _animate(self, time_delay: float = 0.05):
         if self._win is not None:
             self._win.redraw()
-        time.sleep(time_delay)
+        if time_delay > 0:
+            time.sleep(time_delay)
 
-    def _break_entrance_and_exit(self):
+    def _break_entrance_and_exit(self) -> None:
         entrance_cell: Cell = self._cells[0][0]
         exit_cell: Cell = self._cells[self._num_cols - 1][self._num_rows - 1]
         entrance_cell.has_top_wall = False

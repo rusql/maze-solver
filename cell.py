@@ -1,8 +1,9 @@
+from typing import Optional
 from graphics import Line, Point, Window
 
 
 class Cell:
-    def __init__(self, window: Window):
+    def __init__(self, window: Optional[Window]):
         self.has_left_wall: bool = True
         self.has_right_wall:bool = True
         self.has_top_wall:bool = True
@@ -83,4 +84,5 @@ class Cell:
         line_colour = self._forward_color
         if undo:
             line_colour = self._undo_color
-        self._win.draw_line(line, line_colour)
+        if self._win is not None:
+            self._win.draw_line(line, line_colour)
