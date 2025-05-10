@@ -1,5 +1,6 @@
 import time
 import random
+from typing import Optional, List, Tuple
 from cell import Cell
 from graphics import Point, Window
 
@@ -7,25 +8,25 @@ from graphics import Point, Window
 class Maze:
     def __init__(
         self,
-        x1: float,
-        y1: float,
+        x1: int,
+        y1: int,
         num_rows: int,
         num_cols: int,
         cell_size_x: int,
         cell_size_y: int,
-        win: Window = None,
+        win: Optional[Window] = None,
         seed=None,
     ):
         if seed is not None:
             random.seed(seed)
-        self._x1: float = x1
-        self._y1: float = y1
+        self._x1: int = x1
+        self._y1: int = y1
         self._num_rows: int = num_rows
         self._num_cols: int = num_cols
         self._cell_size_x: int = cell_size_x
         self._cell_size_y: int = cell_size_y
-        self._win: Window = win
-        self._cells = []
+        self._win: Optional[Window] = win
+        self._cells:List[List[Cell]] = []
         self._create_cells()
         self._break_entrance_and_exit()
         self._break_walls_r(0, 0)
@@ -78,7 +79,7 @@ class Maze:
                 filter(lambda xy: not self._cells[xy[0]][xy[1]].visited, adjacent_cells)
             )
             if len(possible_directions) == 0:
-                self._draw_cell(i, j)
+                self._draw_cell(i, j, 0)
                 return
             chosen_wall_index = 0
             if len(possible_directions) > 0:
@@ -109,8 +110,8 @@ class Maze:
             self._cells[x2][y2].has_top_wall = False
 
 
-    def _get_adjacent_cells(self, i: int, j: int) -> list[(int, int)]:
-        adjacent_cells: list[Cell] = []
+    def _get_adjacent_cells(self, i: int, j: int) -> List[Tuple[int, int]]:
+        adjacent_cells: List[Tuple[int,int]] = []
 
         # up
         if j > 0 and self._num_rows > 1:
@@ -138,9 +139,9 @@ class Maze:
 
         for col_num in range(self._num_cols):
             for row_num in range(self._num_rows):
-                self._draw_cell(col_num, row_num)
+                self._draw_cell(col_num, row_num, 0)
 
-    def _draw_cell(self, col: int, row: int):
+    def _draw_cell(self, col: int, row: int, time_delay: float = 0.05):
         if self._win is None:
             return
 
@@ -157,10 +158,11 @@ class Maze:
         y2 += self._y1
 
         cell.draw(Point(x1, y1), Point(x2, y2))
-        self._animate()
+        self._animate(time_delay)
 
     def _animate(self, time_delay: float = 0.05):
-        self._win.redraw()
+        if self._win is not None:
+            self._win.redraw()
         time.sleep(time_delay)
 
     def _break_entrance_and_exit(self):

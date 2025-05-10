@@ -2,9 +2,9 @@ from tkinter import Tk, BOTH, Canvas
 
 
 class Point:
-    def __init__(self, x: float, y: float):
-        self.x: float = x
-        self.y: float = y
+    def __init__(self, x: int, y: int):
+        self.x: int = x
+        self.y: int = y
 
 
 class Line:
@@ -30,7 +30,7 @@ class Window:
         self.background_color = "white"
         self.foreground_color = "black"
         self.__root = Tk()
-        self.__root.title = "Maze Solver"
+        self.__root.title("Maze Solver")
         self.__canvas = Canvas(width=width, height=height, bg=self.background_color)
         self.__canvas.pack()
         self.__is_running = False
@@ -49,7 +49,7 @@ class Window:
     def close(self):
         self.__is_running = False
 
-    def draw_line(self, line: Line, fill_color: str = None):
+    def draw_line(self, line: Line, fill_color = None):
         if fill_color is None:
             fill_color = self.foreground_color
         line.draw(self.__canvas, fill_color)

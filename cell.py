@@ -8,10 +8,10 @@ class Cell:
         self.has_top_wall:bool = True
         self.has_bottom_wall = True
         self.visited:bool = False
-        self._x1: float = None
-        self._x2: float = None
-        self._y1: float = None
-        self._y2: float = None
+        self._x1 = 0
+        self._x2 = 0
+        self._y1 = 0
+        self._y2 = 0
         self._win = window
 
         self._undo_color = "gray"
